@@ -481,15 +481,17 @@ class S3FileSystem(AsyncFileSystem):
     async def set_session(self, refresh=False, kwargs={}):
         """Establish S3 connection object.
 
-        ``connect`` is an alias of ``set_session``. This method called with
-        ``refresh=True`` is useful if new credentials have been created and
-        the instance needs to be reestablished.
+        This async method is called by any operation on an ``S3FileSystem`` instance.
+        The ``refresh=True`` argument is useful if new credentials have been created
+        and the instance needs to be reestablished. ``connect`` is a blocking
+        version of ``set_session``.
 
         Parameters
         ----------
         refresh : bool (False)
             If True, create a new session even if one already exists.
         kwargs : dict
+            Currently unused.
 
         Returns
         -------
@@ -498,7 +500,9 @@ class S3FileSystem(AsyncFileSystem):
         Examples
         --------
         >>> s3 = S3FileSystem(profile="<profile name>")  # doctest: +SKIP
-        >>> s3.set_session()  # doctest: +SKIP
+        # use in an async coroutine to assign the client object to a local variable
+        >>> await s3.set_session()  # doctest: +SKIP
+        # blocking version of set_session
         >>> s3.connect(refresh=True)  # doctest: +SKIP
         """
         if self._s3 is not None and not refresh:
